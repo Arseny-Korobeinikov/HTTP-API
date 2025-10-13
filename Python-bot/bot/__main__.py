@@ -19,9 +19,13 @@ def main() -> None:
             bot.database_client.persist_updates(updates)
             updates_next_offset = get_next_offset(updates)
             for update in updates:
+                if "text" in update["message"]:
+                    message_text = update["message"]["text"]
+                else:
+                    message_text = "Это фото"
                 bot.telegram_client.sendMessage(
                     chat_id=update["message"]["chat"]["id"],
-                    text=update["message"]["text"],
+                    text=message_text,
                 )
                 print(".", end="", flush=True)
             time.sleep(1)
