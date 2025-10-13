@@ -1,4 +1,4 @@
-/Python-bot/.venv/
+*.venv/
 *.env
 *__pycache__
 *bot.sqlite
