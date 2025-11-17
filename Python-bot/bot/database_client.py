@@ -7,19 +7,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def persist_updates(updates: dict) -> None:
-    connection = sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH"))
-    with connection:
-        data = []
-        for update in updates:
-            data.append((json.dumps(update, ensure_ascii=False),))
-        connection.executemany("INSERT INTO telegram_events (payload) VALUES (?)", data)
-    connection.close()
+def persist_update(updates: dict) -> None:
+    payload = json.dumps(updates, ensure_ascii=False)
+    with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
+        with connection:
+            connection.execute("INSERT INTO telegram_events (payload) VALUES (?)", (payload,))
 
 
 def recreate_database() -> None:
-    connection = sqlite3.connect(os.getenv('SQLITE_DATABASE_PATH'))
-    with connection:
+    with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
         connection.execute("DROP TABLE IF EXISTS telegram_events")
         connection.execute(
             """
@@ -28,6 +24,5 @@ def recreate_database() -> None:
                 id INTEGER PRIMARY KEY,
                 payload TEXT NOT NULL
             )
-            """,
+            """
         )
-    connection.close()
