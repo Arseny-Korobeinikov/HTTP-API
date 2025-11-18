@@ -33,10 +33,6 @@ def make_request(method: str, **kwargs) -> dict:
         assert response_json["ok"] == True
         return response_json["result"]
 
-def download_file(file_path: str) -> None:
-    url = f"{get_telegram_file_uri()}/{file_path}"
-    urllib.request.urlretrieve(url, file_path)
-
 def get_updates(**kwargs) -> dict:
     return make_request("getUpdates", **kwargs)
 
