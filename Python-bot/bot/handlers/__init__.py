@@ -1,9 +1,9 @@
-from bot.handler import Handler
+from bot.handlers.handler import Handler
 from bot.handlers.update_database_logger import UpdateDatabaseLogger
-
+from bot.handlers.ensure_user_exists import EnsureUserExists
 
 def get_handlers() -> list[Handler]:
     return [
         UpdateDatabaseLogger(),
-        EnsureUserExists()
+        EnsureUserExists(),
     ]
