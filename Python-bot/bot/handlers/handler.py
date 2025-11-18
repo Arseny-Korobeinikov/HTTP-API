@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 
-from bot.handler_result import HandlerStatus
-
+class HandlerStatus(Enum):
+    CONTINUE = 1
+    STOP = 2
 
 class Handler(ABC):
     @abstractmethod
