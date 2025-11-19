@@ -40,8 +40,6 @@ def recreate_database() -> None:
         )
 
 def ensure_user_exists(telegram_id: int) -> None:
-    """Ensure a user with the given telegram_id exists in the users table.
-    If the user doesn't exist, create them. All operations happen in a single transaction."""
     with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
         with connection:
             # Check if user exists
@@ -54,3 +52,36 @@ def ensure_user_exists(telegram_id: int) -> None:
                 connection.execute(
                     "INSERT INTO users (telegram_id) VALUES (?)", (telegram_id,)
                 )
+
+def clear_user_state_and_data(telegram_id: int) -> None:
+    with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
+        with connection:
+            connection.execute(
+                "UPDATE users SET state = NULL, data = NULL WHERE telegram_id = ?",
+                (telegram_id,)
+            )
+
+def update_user_state(telegram_id: int, state: str) -> None:
+    with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
+        with connection:
+            connection.execute(
+                "UPDATE users SET state = ? WHERE telegram_id = ?",
+                (state, telegram_id)
+            )
+
+def get_user(telegram_id: int) -> dict:
+    with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
+        with connection:
+            cursor = connection.execute(
+                "SELECT id, telegram_id, created_at, state, data FROM users WHERE telegram_id = ?", (telegram_id,)
+            )
+            result = cursor.fetchone()
+            if result:
+                return {
+                    'id': result[0],
+                    'telegram_id': result[1],
+                    'created_at': result[2],
+                    'state': result[3],
+                    'data': result[4]
+                }
+            return None
