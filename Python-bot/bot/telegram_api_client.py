@@ -44,3 +44,9 @@ def get_file(file_id: str) -> dict:
 
 def sendPhoto(chat_id: int, photo: str, **kwargs) -> dict:
     return make_request("sendPhoto", chat_id=chat_id, photo=photo, **kwargs)
+
+def answer_callback_query(callback_query_id: str, **kwargs) -> dict:
+    return make_request("answerCallbackQuery", callback_query_id=callback_query_id, **kwargs)
+
+def delete_message(chat_id: int, message_id: int) -> dict:
+    return make_request("deleteMessage", chat_id=chat_id, message_id=message_id)
